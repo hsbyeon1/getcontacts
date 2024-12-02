@@ -3,6 +3,7 @@
 # "A:ALA:4    A4  white\n",
 # "A:CYS:5    C5  yellow\n",
 # "A:TRP:6    W6\n"
+# Reasidue table can be downloaded from GPCRdb
 import pandas as pd
 from pathlib import Path
 import argparse
