@@ -6,7 +6,7 @@ import re
 # merges three dataframes of contact_frequencies,
 # and compute the mean and stdev of the contact_frequencies
 
-def main(freq_paths:list[Path]) -> pd.DataFrame :
+def main(freq_paths:list[Path], freq_cutoff:float = 0.1) -> pd.DataFrame :
     """
     each freq_paths contains a dataframe of contact_frequencies
     whose cols are
@@ -48,7 +48,7 @@ def main(freq_paths:list[Path]) -> pd.DataFrame :
 
     # Keep all necessary columns in the output, including _bw columns
     result = merged[['residue_1_bw', 'residue_2_bw', 'residue_1', 'residue_2', 'freq_avg', 'freq_stdev']]
-
+    result = result[result['freq_avg'] > freq_cutoff]
 
     return result
 
@@ -58,10 +58,13 @@ if __name__=="__main__":
         "-i", type=str, help="tsv files to merge", required=True, nargs='+')
     parser.add_argument(
         "-o", type=argparse.FileType('w'), help="output tsv file", required=True) 
+    parser.add_argument(
+        "-c", type=float, help="frequency cutoff", default=0.1) 
     
     args = parser.parse_args()
     files=args.i
     output_path = args.o
+    cutoff = args.c
 
     freq_paths=[]
     for file in files:
@@ -70,5 +73,6 @@ if __name__=="__main__":
         else:
             freq_paths.append(Path(file))
 
-    merged_df=main(freq_paths)
+    merged_df=main(freq_paths, cutoff)
     merged_df.to_csv(output_path, sep='\t', index=False)
+
