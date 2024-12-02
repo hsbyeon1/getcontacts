@@ -50,6 +50,10 @@ def main(freq_paths:list[Path], freq_cutoff:float = 0.1) -> pd.DataFrame :
     result = merged[['residue_1_bw', 'residue_2_bw', 'residue_1', 'residue_2', 'freq_avg', 'freq_stdev']]
     result = result[result['freq_avg'] > freq_cutoff]
 
+    # Round freq_avg and freq_stdev to 3 decimal places
+    merged['freq_avg'] = merged['freq_avg'].round(3)
+    merged['freq_stdev'] = merged['freq_stdev'].round(3)
+
     return result
 
 if __name__=="__main__":
