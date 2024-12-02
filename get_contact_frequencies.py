@@ -21,38 +21,38 @@ import argparse
 from contact_calc.transformations import *
 
 
-# def parse_labelfile(label_file):
-#     """
-#     Parses a label-file and returns a dictionary with the residue label mappings. Unless prepended with a comment-
-#     indicator (#), each line is assumed to have a valid residue identifier (e.g. "A:ALA:1") and a label which the
-#     residue should be mapped to (e.g. "A1").
-#
-#     Example:
-#         parse_labelfile(["A:ALA:1\tA1")
-#         # Returns {"A:ALA:1": "A1"}
-#
-#     Parameters
-#     ----------
-#     label_file: Iterable[str]
-#         Lines with tab-separated residue identifier and label
-#
-#     Returns
-#     -------
-#     dict of str: str
-#         Mapping from residue-id in contact-file to label of any format
-#
-#     """
-#     ret = {}
-#     for line in label_file:
-#         line = line.strip()
-#         # Ignore line if empty or comment
-#         if line[0] == "#" or len(line) == 0:
-#             continue
-#
-#         tokens = line.split("\t")
-#         ret[tokens[0]] = tokens[1]
-#
-#     return ret
+def parse_labelfile(label_file):
+    """
+    Parses a label-file and returns a dictionary with the residue label mappings. Unless prepended with a comment-
+    indicator (#), each line is assumed to have a valid residue identifier (e.g. "A:ALA:1") and a label which the
+    residue should be mapped to (e.g. "A1").
+
+    Example:
+        parse_labelfile(["A:ALA:1\tA1")
+        # Returns {"A:ALA:1": "A1"}
+
+    Parameters
+    ----------
+    label_file: Iterable[str]
+        Lines with tab-separated residue identifier and label
+
+    Returns
+    -------
+    dict of str: str
+        Mapping from residue-id in contact-file to label of any format
+
+    """
+    ret = {}
+    for line in label_file:
+        line = line.strip()
+        # Ignore line if empty or comment
+        if line[0] == "#" or len(line) == 0:
+            continue
+
+        tokens = line.split("\t")
+        ret[tokens[0]] = tokens[1]
+
+    return ret
 
 
 def main(argv=None):
@@ -125,6 +125,9 @@ def main(argv=None):
         counts.append((num_frames, gen_counts(residue_contacts)))
 
     total_frames, frequencies = gen_frequencies(counts)
+
+    #sort frequencies
+    frequencies = dict(sorted(frequencies.items(), key=lambda x: x[1][1], reverse=True))
 
     output_file.write('#\ttotal_frames:%d\tinteraction_types:%s\n' % (total_frames, ','.join(itypes)))
     output_file.write('#\tColumns:\tresidue_1,\tresidue_2\tframe_count\tcontact_frequency\n')

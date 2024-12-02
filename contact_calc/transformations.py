@@ -354,7 +354,7 @@ def parse_frequencyfiles(freq_files, freq_cutoff):
     return ret
 
 
-def gen_frequencies(count_list):
+def gen_frequencies(count_list:list[tuple[int,dict[tuple[str,str],int]]]):
     """
     Take a list of residue contact counts (see output of `gen_counts`) and compute total counts and frequencies.
 
@@ -379,15 +379,16 @@ def gen_frequencies(count_list):
     # print("gen_frequencies")
     # print(count_list)
     from collections import defaultdict
-    rescontact_count = defaultdict(int)
-    total_frames = 0
+    rescontact_count:defaultdict[tuple[str,str],int] = defaultdict(int)
+    total_frames : int = 0
     for frames, rescount_dict in count_list:
         total_frames += frames
 
         for (res1, res2), count in rescount_dict.items():
             rescontact_count[(res1, res2)] += count
 
-    respair_freqs = {respair: (count, float(count) / total_frames) for respair, count in rescontact_count.items()}
+    respair_freqs = {respair: (count, float(count) / total_frames) 
+                     for respair, count in rescontact_count.items()}
     return total_frames, respair_freqs
 
 
